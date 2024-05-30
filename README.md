@@ -14,7 +14,13 @@ Credit goes to Streamlit for providing the tutorial and code examples for creati
 This project implements a conversational app using Streamlit, allowing users to interact with a chatbot interface. For
 cost saving the app uses the OpenAI gpt-3.5-turbo by default.
 
+## Requirements
+
+1. The script has been tested on `Python 3.10.6`
+2. The packages versions are on the `requirements.txt` file
+
 ## Instructions
-0. Place a `.env` file in the same folder as this script containing your OpenAI API key. The key should be named `OPENAI_API_KEY`.
-1. Run the Streamlit app by executing this script in your terminal: streamlit run app.py
-2. Interact with the chatbot by typing messages and receiving responses in the Streamlit interface.
+1. Install the necessary packages: `pip install -r requirements.txt`
+2. Place a `.env` file in the same folder as this script containing your OpenAI API key. The key should be named `OPENAI_API_KEY`.
+3. Run the Streamlit app by executing this script in your terminal: `streamlit run app.py`
+4. Interact with the chatbot by typing messages and receiving responses in the Streamlit interface.
