@@ -32,12 +32,22 @@ import yaml
 from yaml.loader import SafeLoader
 
 # reading the authentication config file
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-credentials_file_name = 'config.yaml'
-credentials_file_path = os.path.join(base_dir, credentials_file_name)
-with open(credentials_file_path) as file:
-    config = yaml.load(file, Loader=SafeLoader)
+def read_config(config_file_name_path):
 
+    with open(config_file_name_path) as file:
+        config = yaml.load(file, Loader=SafeLoader)
+
+    return config
+
+def write_config(config_file_name_path, config):
+    with open(config_file_name_path, 'w') as file:
+        yaml.dump(config, file)
+
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+config_file_name = 'config.yaml'
+config_file_name_path = os.path.join(base_dir, config_file_name)
+
+config = read_config(config_file_name_path)
 # instantiating the authenticator
 authenticator = stauth.Authenticate(
     config['credentials'],
@@ -46,6 +56,13 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days'],
     config['pre-authorized']
 )
+
+def reset_password(config_file_path, username, new_password):
+    config = read_config(config_file_name_path)
+
+    config['credentials']['usernames'][username]['password'] = new_password
+
+    write_config(config_file_name_path, config)
 
 # handering login widget
 authenticator.login(location='main')
@@ -57,6 +74,23 @@ if st.session_state["authentication_status"]:
         authenticator.logout(location='sidebar')
 
         st.write(f'Welcome *{st.session_state["name"]}*')
+
+        if st.session_state["authentication_status"]:
+            try:
+                if authenticator.reset_password(st.session_state["username"], clear_on_submit=True):
+
+                    hashed_new_password = \
+                        authenticator.authentication_handler.credentials['usernames']\
+                        [st.session_state["username"]]['password']
+
+                    reset_password(config_file_name_path,
+                                   st.session_state["username"],
+                                   hashed_new_password)
+
+                    st.success('Password modified successfully')
+            except Exception as e:
+                st.error(e)
+
 
     # chatbot functionality
     time_to_live_in_sec = 3600

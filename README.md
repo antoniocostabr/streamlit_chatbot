@@ -30,7 +30,7 @@ cost saving the app uses the OpenAI gpt-3.5-turbo by default.
 ## Roadmap
 
 1. Basic chat functionality ✅
-2. User and admin registration 🔧
+2. User and admin authentication 🔧
 3. Retrieval-Augmented Generation - RAG 📌
 4. Containerize with Docker 📌
 4. Deploy on AWS 📌
