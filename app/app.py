@@ -27,49 +27,85 @@ import streamlit as st
 import dotenv
 import os
 from openai import OpenAI
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
 
+# reading the authentication config file
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+credentials_file_name = 'config.yaml'
+credentials_file_path = os.path.join(base_dir, credentials_file_name)
+with open(credentials_file_path) as file:
+    config = yaml.load(file, Loader=SafeLoader)
 
-time_to_live_in_sec = 3600
-@st.cache_data(ttl=time_to_live_in_sec)
-def get_api_key():
-    # loadind .env file
-    dotenv.load_dotenv()
+# instantiating the authenticator
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['pre-authorized']
+)
 
-    # reading the API key from the environment
-    OpenAIKey = os.getenv("OPENAI_API_KEY")
+# handering login widget
+authenticator.login(location='main')
 
-    return OpenAIKey
+# checking if user is authenticated
+if st.session_state["authentication_status"]:
 
-OpenAIKey = get_api_key()
+    with st.sidebar:
+        authenticator.logout(location='sidebar')
 
-st.title("ChatGPT-like clone")
+        st.write(f'Welcome *{st.session_state["name"]}*')
 
-#client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-client = OpenAI(api_key=OpenAIKey)
+    # chatbot functionality
+    time_to_live_in_sec = 3600
+    @st.cache_data(ttl=time_to_live_in_sec)
+    def get_api_key():
+        # loadind .env file
+        dotenv.load_dotenv()
 
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
+        # reading the API key from the environment
+        OpenAIKey = os.getenv("OPENAI_API_KEY")
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+        return OpenAIKey
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    OpenAIKey = get_api_key()
 
-if prompt := st.chat_input("What is up?"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    st.title("ChatGPT-like clone")
 
-    with st.chat_message("assistant"):
-        stream = client.chat.completions.create(
-            model=st.session_state["openai_model"],
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
-        response = st.write_stream(stream)
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    #client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+    client = OpenAI(api_key=OpenAIKey)
+
+    if "openai_model" not in st.session_state:
+        st.session_state["openai_model"] = "gpt-3.5-turbo"
+
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    if prompt := st.chat_input("What is up?"):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        with st.chat_message("assistant"):
+            stream = client.chat.completions.create(
+                model=st.session_state["openai_model"],
+                messages=[
+                    {"role": m["role"], "content": m["content"]}
+                    for m in st.session_state.messages
+                ],
+                stream=True,
+            )
+            response = st.write_stream(stream)
+        st.session_state.messages.append({"role": "assistant", "content": response})
+
+elif st.session_state["authentication_status"] is False:
+    st.error('Username/password is incorrect')
+
+elif st.session_state["authentication_status"] is None:
+    st.warning('Please enter your username and password')

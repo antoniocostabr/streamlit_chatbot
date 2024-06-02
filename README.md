@@ -25,6 +25,7 @@ cost saving the app uses the OpenAI gpt-3.5-turbo by default.
 2. Place a `.env` file in the project folder containing `OPENAI_API_KEY=<your OpenAI API Key>`.
 3. Run the Streamlit app by executing this script in your terminal: `streamlit run app.py`
 4. Interact with the chatbot by typing messages and receiving responses in the Streamlit interface.
+5. A `config.yalm` file contains authentication data. Use `login=jsmith` and `password=abc`for testing.
 
 ## Roadmap
 
