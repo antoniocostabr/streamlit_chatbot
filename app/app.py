@@ -1,7 +1,9 @@
 """
 streamlit_chatbot
 
-This script is based on the Streamlit tutorial for building conversational apps.
+This script is based on the Streamlit tutorial for building conversational
+apps.
+
 The original tutorial can be found at:
 https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps.
 
@@ -16,10 +18,13 @@ This script implements a conversational app using Streamlit, allowing users
 to interact with a chatbot interface.
 
 Instructions:
-0. Place a `.env` file in the same folder as this script containing your OpenAI API key.
+0. Place a `.env` file in the same folder as this script containing your
+OpenAI API key.
     The key should be named `OPENAI_API_KEY`.
-1. Run the Streamlit app by executing this script in your terminal: streamlit run app.py.
-2. Interact with the chatbot by typing messages and receiving responses in the Streamlit interface.
+1. Run the Streamlit app by executing this script in your terminal:
+streamlit run app.py.
+2. Interact with the chatbot by typing messages and receiving responses in the
+Streamlit interface.
 """
 
 
@@ -31,6 +36,7 @@ import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 
+
 # reading the authentication config file
 def read_config(config_file_name_path):
 
@@ -38,6 +44,7 @@ def read_config(config_file_name_path):
         config = yaml.load(file, Loader=SafeLoader)
 
     return config
+
 
 def write_config(config_file_name_path, config):
     with open(config_file_name_path, 'w') as file:
@@ -57,6 +64,7 @@ authenticator = stauth.Authenticate(
     config['pre-authorized']
 )
 
+
 def reset_password(config_file_path, username, new_password):
     config = read_config(config_file_name_path)
 
@@ -66,6 +74,10 @@ def reset_password(config_file_path, username, new_password):
 
 # handering login widget
 authenticator.login(location='main')
+
+def togle_model_name():
+    st.session_state['openai_model_index'] = 1 - st.session_state['openai_model_index']
+    st.session_state["openai_model"] = open_ai_models_list[st.session_state['openai_model_index']]
 
 # checking if user is authenticated
 if st.session_state["authentication_status"]:
@@ -77,11 +89,13 @@ if st.session_state["authentication_status"]:
 
         if st.session_state["authentication_status"]:
             try:
-                if authenticator.reset_password(st.session_state["username"], clear_on_submit=True):
+                if authenticator.reset_password(st.session_state["username"],
+                                                clear_on_submit=True):
 
                     hashed_new_password = \
-                        authenticator.authentication_handler.credentials['usernames']\
-                        [st.session_state["username"]]['password']
+                        authenticator.authentication_handler.credentials[
+                            'usernames'][st.session_state["username"]]\
+                            ['password']
 
                     reset_password(config_file_name_path,
                                    st.session_state["username"],
@@ -91,9 +105,13 @@ if st.session_state["authentication_status"]:
             except Exception as e:
                 st.error(e)
 
+        # selection of model
+        open_ai_models_list = ["gpt-3.5-turbo", "gpt-4o"]
+        model_name = st.selectbox("Model", open_ai_models_list, on_change=togle_model_name)
 
     # chatbot functionality
     time_to_live_in_sec = 3600
+
     @st.cache_data(ttl=time_to_live_in_sec)
     def get_api_key():
         # loadind .env file
@@ -108,11 +126,13 @@ if st.session_state["authentication_status"]:
 
     st.title("ChatGPT-like clone")
 
-    #client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+    # client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
     client = OpenAI(api_key=OpenAIKey)
 
-    if "openai_model" not in st.session_state:
-        st.session_state["openai_model"] = "gpt-3.5-turbo"
+
+    if "openai_model_index" not in st.session_state:
+        st.session_state['openai_model_index'] = 0
+        st.session_state["openai_model"] = open_ai_models_list[st.session_state['openai_model_index']]
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -121,7 +141,7 @@ if st.session_state["authentication_status"]:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    if prompt := st.chat_input("What is up?"):
+    if prompt:= st.chat_input("What is up?"):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
@@ -136,7 +156,8 @@ if st.session_state["authentication_status"]:
                 stream=True,
             )
             response = st.write_stream(stream)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        st.session_state.messages.append({"role": "assistant",
+                                          "content": response})
 
 elif st.session_state["authentication_status"] is False:
     st.error('Username/password is incorrect')
