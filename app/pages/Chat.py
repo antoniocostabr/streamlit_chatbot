@@ -50,7 +50,7 @@ def write_config(config_file_name_path, config):
     with open(config_file_name_path, 'w') as file:
         yaml.dump(config, file)
 
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 config_file_name = 'config.yaml'
 config_file_name_path = os.path.join(base_dir, config_file_name)
 
@@ -104,6 +104,8 @@ if st.session_state["authentication_status"]:
                     st.success('Password modified successfully')
             except Exception as e:
                 st.error(e)
+
+        st.markdown('---')
 
         # selection of model
         open_ai_models_list = ["gpt-3.5-turbo", "gpt-4o"]
