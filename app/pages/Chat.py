@@ -1,33 +1,3 @@
-"""
-streamlit_chatbot
-
-This script is based on the Streamlit tutorial for building conversational
-apps.
-
-The original tutorial can be found at:
-https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps.
-
-Credit goes to Streamlit for providing the tutorial and code examples for
-creating interactive conversational applications.
-
-Author: Antonio Costa   https://github.com/antoniocostabr
-Date: 2024-05-30
-
-Description:
-This script implements a conversational app using Streamlit, allowing users
-to interact with a chatbot interface.
-
-Instructions:
-0. Place a `.env` file in the same folder as this script containing your
-OpenAI API key.
-    The key should be named `OPENAI_API_KEY`.
-1. Run the Streamlit app by executing this script in your terminal:
-streamlit run app.py.
-2. Interact with the chatbot by typing messages and receiving responses in the
-Streamlit interface.
-"""
-
-
 import streamlit as st
 import dotenv
 import os
