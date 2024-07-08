@@ -72,7 +72,7 @@ def reset_password(config_file_path, username, new_password):
 
     write_config(config_file_name_path, config)
 
-# handering login widget
+# rendering login widget
 authenticator.login(location='main')
 
 def togle_model_name():
