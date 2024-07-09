@@ -32,14 +32,15 @@ st.markdown(
     4. The *functionality* is two-fold:
         - **Chat**: Interact with a chatbot receiving responses about any subject.
         - **RAG**: Upload a file you want to discuss about and have the LLM to extract the relevant information.
-    6. A `config.yalm` file contains authentication data. For testing, use `login=jsmith` and `password=abc` (don't forget to **Update** this file if you ever deploy this!!)
+    6. A `config.yalm` file contains authentication data. For testing, use `login=jsmith` and `password=abc` (don't forget to **Update** this file if you ever deploy this!!).
+    7. `Makefile` contains commands to build and run the Docker image and to start and stop containers.
 
     ## Roadmap
 
     1. Basic chat functionality ✅
     2. User and admin authentication ✅
     3. Retrieval-Augmented Generation - RAG ✅
-    4. Containerize with Docker 📌
+    4. Containerize with Docker ✅
     4. Deploy on AWS 📌
 
     **Status date**: 2024-07-08
