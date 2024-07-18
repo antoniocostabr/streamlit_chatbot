@@ -78,7 +78,7 @@ if st.session_state["authentication_status"]:
         st.markdown('---')
 
         # selection of model
-        open_ai_models_list = ["gpt-3.5-turbo", "gpt-4o"]
+        open_ai_models_list = ["gpt-4o-mini", "gpt-4o"]
         model_name = st.selectbox("Model", open_ai_models_list, on_change=togle_model_name)
 
     # chatbot functionality

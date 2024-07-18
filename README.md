@@ -11,7 +11,7 @@ Credit goes to Streamlit for providing the tutorial and code examples for creati
 
 
 ## Description
-This project implements a conversational app using Streamlit, and OpenAI API allowing users to interact with a chatbot interface. For cost saving the app uses the OpenAI gpt-3.5-turbo by default (but one can select gpt-4o as well).
+This project implements a conversational app using Streamlit, and OpenAI API allowing users to interact with a chatbot interface. For cost saving the app uses the OpenAI gpt-3.5-turbo / gpt-4o-mini by default (but one can select gpt-4o as well).
 
 There is also an implementation of Retrieval-Augmented Generation - RAG so the user can upload a file and chat about it with the LLM.
 

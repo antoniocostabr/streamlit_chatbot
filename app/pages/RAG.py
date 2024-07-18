@@ -5,6 +5,20 @@ from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
+import dotenv
+
+time_to_live_in_sec = 3600
+@st.cache_data(ttl=time_to_live_in_sec)
+def get_api_key():
+    # loadind .env file
+    dotenv.load_dotenv()
+
+    # reading the API key from the environment
+    OpenAIKey = os.getenv("OPENAI_API_KEY")
+
+    return OpenAIKey
+
+OpenAIKey = get_api_key()
 
 def read_config(config_file_name_path):
 
